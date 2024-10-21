@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Paper Wallet Bitcoin</title>
+    <script src="https://cdn.jsdelivr.net/npm/bitcoinjs-lib@5.2.0/dist/bitcoinjs.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .wallet { border: 1px solid #000; padding: 20px; margin: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <h1>Gerador de Paper Wallet Bitcoin</h1>
+    <button onclick="gerarWallet()">Criar Wallet</button>
+    
+    <div class="wallet" id="wallet">
+        <h2>Paper Wallet</h2>
+        <p>Chave Privada (WIF): <span id="privateKey"></span></p>
+        <p>Endereço Público: <span id="address"></span></p>
+        <button onclick="window.print()">Imprimir Wallet</button>
+    </div>
+
+    <script>
+        // Verifica se a biblioteca foi carregada corretamente
+        function verificarBitcoin() {
+            if (typeof bitcoin === 'undefined') {
+                alert('A biblioteca bitcoinjs-lib não foi carregada corretamente. Tente recarregar a página.');
+            }
+        }
+
+        function gerarWallet() {
+            const keyPair = bitcoin.ECPair.makeRandom();
+            const privateKeyWIF = keyPair.toWIF();
+            const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey });
+
+            document.getElementById('privateKey').textContent = privateKeyWIF;
+            document.getElementById('address').textContent = address;
+            document.getElementById('wallet').style.display = 'block';
+        }
+
+        // Chama a verificação após a página ser carregada
+        window.onload = verificarBitcoin;
+    </script>
+</body>
+</html>
